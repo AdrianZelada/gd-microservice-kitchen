@@ -1,7 +1,5 @@
-
-// const { buildOrder } = require("../services/kichen.service");
-const purchaseHistoryService = require('../services/purchase_history.service').getInstance();
-const orderService = require('../services/order.service').getInstance();
+import { WarehouseService } from "./warehouse.service";
+import { OrderService } from "./order.service";
 export class QUeueService {
     static instance: QUeueService;
     db: any;
@@ -25,6 +23,8 @@ export class QUeueService {
     }
 
     async enqueue(recipe: any) {
+        console.log("recipe")
+        console.log(recipe)
         this.db.enqueue(recipe).then(() => {
             if(!this.isBusy){
                 this.cookingOrder();
@@ -35,23 +35,48 @@ export class QUeueService {
 
     async cookingOrder() {
         const queue = await this.db.getAll();
+        const orderService = OrderService.getInstance();
+
         if(queue.length > 0){
             this.isBusy =true;
-            const order = queue[0];
-            buildOrder(order, 
-                (itemBought: any)=>{
-                    return purchaseHistoryService.add({
-                        ...itemBought,
-                        orderName: order.name
-                    });
+            const order = {
+                orderId: queue[0].id,
+                ingredients: {
+                    ...queue[0]
                 }
-                ,() =>{
-                this.db.dequeue(order.id).then(() => {
-                    orderService.update(order.id, 'resolved').then(() =>{
+            }
+
+            delete order.ingredients.id;
+
+            console.log("order");
+            console.log(order)
+            WarehouseService.getIngredients(order).then((response: any) => {
+                console.log("response");
+                console.log(response)
+                const {data} = response;
+                this.db.dequeue(data.orderId).then(() => {
+                    orderService.update(data.orderId, 'resolved').then(() =>{
                         this.cookingOrder();
                     });
                 })
+            }).catch(e => {
+                console.error("Asdasdasdas");
+                console.error(e);
             });
+            // buildOrder(order, 
+            //     (itemBought: any)=>{
+            //         return purchaseHistoryService.add({
+            //             ...itemBought,
+            //             orderName: order.name
+            //         });
+            //     }
+            //     ,() =>{
+            //     this.db.dequeue(order.id).then(() => {
+            //         orderService.update(order.id, 'resolved').then(() =>{
+            //             this.cookingOrder();
+            //         });
+            //     })
+            // });
         } else {
             this.isBusy = false;
         }

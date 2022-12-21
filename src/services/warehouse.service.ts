@@ -1,9 +1,8 @@
-import { Axios } from 'axios';
+import axios  from 'axios';
 
 const Warehouse = {
     getIngredients: (recipe: any)=>{
-        const axios = new Axios();
-        return axios.post(`${process.env.SERVER_WAREHOUSE}/getIngredients`, recipe)
+        return axios.post(`http://${process.env.SERVER_WAREHOUSE}/warehouse`, {...recipe})
     }
 }
 
