@@ -19,6 +19,7 @@ export default function KitchenRoute(router: Router) {
     router.get('/getOrder', (req: Request, res: Response) => {
         const orderService = OrderService.getInstance();
         const queueService = QUeueService.getInstance();
+
         RecipeStore.getRandomRecipe().then((result: any) => {   
             orderService.add(result).then((orderItem: any)=>{
                 queueService.enqueue(orderItem).then((val) => {
