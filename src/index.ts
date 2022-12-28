@@ -30,5 +30,5 @@ app.options('*', cors())
 app.use(bodyParser.json());
 app.use('/kitchen', kitchen(express.Router()));
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+  console.log(`⚡️[server]: Server Kitchen is running at https://localhost:${port}`);
 }); 

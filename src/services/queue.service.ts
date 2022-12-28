@@ -22,9 +22,7 @@ export class QUeueService {
         return QUeueService.instance;
     }
 
-    async enqueue(recipe: any) {
-        console.log("recipe")
-        console.log(recipe)
+    async enqueue(recipe: any) {        
         this.db.enqueue(recipe).then(() => {
             if(!this.isBusy){
                 this.cookingOrder();
@@ -47,12 +45,7 @@ export class QUeueService {
             }
 
             delete order.ingredients.id;
-
-            console.log("order");
-            console.log(order)
             WarehouseService.getIngredients(order).then((response: any) => {
-                console.log("response");
-                console.log(response)
                 const {data} = response;
                 this.db.dequeue(data.orderId).then(() => {
                     orderService.update(data.orderId, 'resolved').then(() =>{
@@ -60,23 +53,8 @@ export class QUeueService {
                     });
                 })
             }).catch(e => {
-                console.error("Asdasdasdas");
                 console.error(e);
             });
-            // buildOrder(order, 
-            //     (itemBought: any)=>{
-            //         return purchaseHistoryService.add({
-            //             ...itemBought,
-            //             orderName: order.name
-            //         });
-            //     }
-            //     ,() =>{
-            //     this.db.dequeue(order.id).then(() => {
-            //         orderService.update(order.id, 'resolved').then(() =>{
-            //             this.cookingOrder();
-            //         });
-            //     })
-            // });
         } else {
             this.isBusy = false;
         }
