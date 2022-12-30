@@ -24,7 +24,10 @@ export default function KitchenRoute(router: Router) {
                 queueService.enqueue(orderItem).then((val) => {
                     res.statusCode = 200;
                     res.json({
-                        ...val
+                        title: 'Lead Microservices Architecture Docker Container & Kubernetes',
+                        order: {
+                            ...val
+                        }
                     });
                 });
             }) 
