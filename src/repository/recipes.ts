@@ -7,9 +7,12 @@ const recipes = [
     { id: 6, name: 'Recipe 6',  tomato: 2, lemon: 1, potato: 2, rice: 1, ketchup: 0, lettuce: 0, onion: 2, cheese: 1, meat: 0, chicken: 0 },
 ]
 
+const getRecipes =async () => {
+    return Promise.resolve(recipes);
+}
+
 const getRecipe = async (id: number) => {
     return Promise.resolve(recipes[id-1]);
-    // return Promise.resolve(recipes.filter( r => r.id == id));
 };
 
 const getRandomId = async () =>{
@@ -23,6 +26,7 @@ const getRandomRecipe = async () => {
 }
 
 export const RecipeStore = {
+    getRecipes,
     getRecipe,
     getRandomId,
     getRandomRecipe
